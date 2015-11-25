@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 
 typedef enum{
-    MenuViewStyleDefault,     // 默认
-    MenuViewStyleLine,        // 带下划线 (颜色会变化)
-    MenuViewStyleFoold,       // 涌入效果 (填充)
-    MenuViewStyleFooldHollow, // 涌入效果 (空心的)
+    MenuViewStyleDefault,     // default
+    MenuViewStyleLine,        // underline
+    MenuViewStyleFoold,       // fill with foold effect
+    MenuViewStyleFooldHollow, // border without fill foold effect
     
 } MenuViewStyle;
 

@@ -66,15 +66,12 @@
         btn.tag = i;
         
         if (self.style == MenuViewStyleFoold || self.style == MenuViewStyleFooldHollow) {
-//            btn.fontName = @"BodoniSvtyTwoOSITCTT-Bold";
             btn.fontSize = 16;
             btn.normalColor = kNomalColor;
             btn.selectedColor = kSelectedColorFontFlood;
             if (self.style == MenuViewStyleFooldHollow) {
                 btn.selectedColor = kSelectedColorFloodH;
             }
-        }else{
-//            btn.fontName = @"经典细圆简";
         }
         
         [btn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -153,10 +150,35 @@
     if (self.selectedBtn == btn) {
         return;
     }
-    [self resetSelectedBtn:btn.tag];
     if ([self.delegate respondsToSelector:@selector(menuViewBtnDidClickAtIndex:)]) {
         [self.delegate menuViewBtnDidClickAtIndex:btn.tag];
     }
+    [self resetSelectedBtn:btn.tag];
+}
+
+- (void)resetSelectedBtn:(NSInteger)tag
+{
+    self.selectedBtn.selected = NO;
+    LPMenuBtn *newSelectedBtn;
+    for (UIView *btn in self.navMenuScrollView.subviews) {
+        if (btn.tag == tag && [btn isKindOfClass:[LPMenuBtn class]]) {
+            newSelectedBtn = (LPMenuBtn *)btn;
+            newSelectedBtn.selected = YES;
+        }
+    }
+    [self moveViewWithIndex:newSelectedBtn.tag];
+    self.selectedBtn = newSelectedBtn;
+    if (self.style == MenuViewStyleDefault) {
+        [self.selectedBtn selectedItemWithoutAnimation];
+        [self.selectedBtn deselectedItemWithoutAnimation];
+    } else {
+        [UIView animateWithDuration:0.3 animations:^{
+            CGFloat x = self.selectedBtn.frame.origin.x;
+            CGFloat w = self.selectedBtn.frame.size.width;
+            self.line.frame = CGRectMake(x, self.line.frame.origin.y, w, self.line.frame.size.height);
+        }];
+    }
+    
 }
 
 - (void)selectedBtnMoveToCenterWithIndex:(NSInteger)index withRate:(CGFloat)pageRate
@@ -226,29 +248,6 @@
         [scrollView setContentOffset:CGPointMake(0, 0)];
     } else if (scrollView.contentOffset.x + self.frame.size.width >= scrollView.contentSize.width) {
         [scrollView setContentOffset:CGPointMake(scrollView.contentSize.width - self.frame.size.width, 0)];
-    }
-}
-
-- (void)resetSelectedBtn:(NSInteger)tag
-{
-    for (LPMenuBtn *btn in self.navMenuScrollView.subviews) {
-        if (btn.tag == tag) {
-            btn.selected = YES;
-            self.selectedBtn = btn;
-        } else {
-            btn.selected = NO;
-        }
-    }
-    [self moveViewWithIndex:self.selectedBtn.tag];
-    if (self.style == MenuViewStyleDefault) {
-        [self.selectedBtn selectedItemWithoutAnimation];
-        [self.selectedBtn deselectedItemWithoutAnimation];
-    } else {
-        [UIView animateWithDuration:0.3 animations:^{
-            CGFloat x = self.selectedBtn.frame.origin.x;
-            CGFloat w = self.selectedBtn.frame.size.width;
-            self.line.frame = CGRectMake(x, self.line.frame.origin.y, w, self.line.frame.size.height);
-        }];
     }
 }
 
